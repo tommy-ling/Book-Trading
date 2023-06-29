@@ -1,0 +1,41 @@
+apiVersion: skaffold/v4beta3
+kind: Config
+manifests:
+    rawYaml:
+        - ./infra/k8s/*
+build:
+    local:
+        push: false
+    artifacts:
+        - image: tommyling79/book-trading-auth
+          context: auth
+          docker:
+              dockerfile: Dockerfile
+          sync:
+              manual:
+                  - src: 'src/**/*.ts'
+                    dest: .
+        - image: tommyling79/book-trading-books
+          context: books
+          docker:
+              dockerfile: Dockerfile
+          sync:
+              manual:
+                  - src: 'src/**/*.ts'
+                    dest: .
+        - image: tommyling79/book-trading-requests
+          context: requests
+          docker:
+              dockerfile: Dockerfile
+          sync:
+              manual:
+                  - src: 'src/**/*.ts'
+                    dest: .
+        - image: tommyling79/book-trading-client
+          context: client
+          docker:
+              dockerfile: Dockerfile
+          sync:
+              manual:
+                  - src: '**/*.js'
+                    dest: .

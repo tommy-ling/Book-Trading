@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: books-depl
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: books
+    template:
+        metadata:
+            labels:
+                app: books
+        spec:
+            containers:
+                - name: books
+                  image: tommyling79/book-trading-books
+                  env:
+                      - name: NATS_URL
+                        value: 'http://nats-srv:4222'
+                      - name: NATS_CLUSTER_ID
+                        value: 'booktrading'
+                      - name: NATS_CLIENT_ID
+                        valueFrom:
+                            fieldRef:
+                                fieldPath: metadata.name
+                      - name: MONGO_URI
+                        value: mongodb://books-mongo-srv:27017/books
+                      - name: JWT_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: jwt-secret-book-trading
+                                key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: books-srv
+spec:
+    selector:
+        app: books
+    ports:
+        - name: books
+          protocol: TCP
+          port: 3000
+          targetPort: 3000

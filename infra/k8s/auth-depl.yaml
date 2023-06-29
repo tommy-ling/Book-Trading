@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: auth-depl
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: auth
+    template:
+        metadata:
+            labels:
+                app: auth
+        spec:
+            containers:
+                - name: auth
+                  image: tommyling79/book-trading-auth
+                  env:
+                      - name: NATS_URL
+                        value: 'http://nats-srv:4222'
+                      - name: NATS_CLUSTER_ID
+                        value: 'booktrading'
+                      - name: NATS_CLIENT_ID
+                        valueFrom:
+                            fieldRef:
+                                fieldPath: metadata.name
+                      - name: MONGO_URI
+                        value: mongodb://auth-mongo-srv:27017/auth
+                      - name: JWT_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: jwt-secret-book-trading
+                                key: JWT_KEY
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: auth-srv
+spec:
+    selector:
+        app: auth
+    ports:
+        - name: auth
+          protocol: TCP
+          port: 3000
+          targetPort: 3000
