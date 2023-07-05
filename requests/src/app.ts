@@ -8,6 +8,8 @@ import { indexRequestRouter } from './routes';
 import { showReceivedRouter } from './routes/showReceived';
 import { createRequestRouter } from './routes/new';
 import { deleteRequestRouter } from './routes/delete';
+import { matchRequestRouter } from './routes/match';
+import { allRequestRouter } from './routes/all';
 
 const app = express();
 app.set('trust proxy', true);
@@ -26,6 +28,8 @@ app.use(indexRequestRouter);
 app.use(showReceivedRouter);
 app.use(createRequestRouter);
 app.use(deleteRequestRouter);
+app.use(matchRequestRouter);
+app.use(allRequestRouter);
 
 app.all('*', (req, res) => {
     throw new NotFoundError('Page Not Found');

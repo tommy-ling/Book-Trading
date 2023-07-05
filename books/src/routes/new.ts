@@ -33,6 +33,7 @@ router.post('/api/books', requireAuth, async (req: Request, res: Response) => {
         title: book.title,
         userId: user.id,
         version: book.version,
+        currentStatus: book.currentStatus,
     });
 
     res.status(201).send(book);

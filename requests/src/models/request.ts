@@ -8,7 +8,7 @@ interface RequestAttrs {
     toUser: UserDoc;
     fromBook: BookDoc;
     toBook: BookDoc;
-    status: string;
+    currentStatus: string;
 }
 
 interface RequestDoc extends mongoose.Document {
@@ -16,7 +16,7 @@ interface RequestDoc extends mongoose.Document {
     toUser: UserDoc;
     fromBook: BookDoc;
     toBook: BookDoc;
-    status: string;
+    currentStatus: string;
     version: number;
 }
 
@@ -42,7 +42,7 @@ const requestSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Book',
         },
-        status: {
+        currentStatus: {
             type: String,
             required: true,
         },

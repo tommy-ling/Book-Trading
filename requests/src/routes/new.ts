@@ -29,7 +29,7 @@ router.post('/api/requests', async (req: Request, res: Response) => {
         toUser,
         fromBook,
         toBook,
-        status: 'pending',
+        currentStatus: 'pending',
     });
 
     await request.save();
@@ -40,7 +40,7 @@ router.post('/api/requests', async (req: Request, res: Response) => {
         toBookId: toBookId,
         fromUserId: fromUser.id,
         toUserId: toUser.id,
-        status: request.status,
+        status: request.currentStatus,
         version: request.version,
     });
 

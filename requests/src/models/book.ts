@@ -17,6 +17,7 @@ export interface BookDoc extends mongoose.Document {
     version: string;
     title: string;
     user: UserDoc;
+    currentStatus?: string;
 }
 
 const bookSchema = new mongoose.Schema(
@@ -28,6 +29,10 @@ const bookSchema = new mongoose.Schema(
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
+        },
+        currentStatus: {
+            type: String,
+            default: null,
         },
     },
     {

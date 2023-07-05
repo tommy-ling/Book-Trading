@@ -53,7 +53,7 @@ const setup = async () => {
         toUser: userTwo,
         fromBook: bookOne,
         toBook: bookTwo,
-        status: 'pending',
+        currentStatus: 'pending',
     });
 
     const reqTwo = Request.build({
@@ -61,7 +61,7 @@ const setup = async () => {
         toUser: userOne,
         fromBook: bookThree,
         toBook: bookOne,
-        status: 'pending',
+        currentStatus: 'pending',
     });
 
     const data: UserDeletedEvent['data'] = {

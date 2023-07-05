@@ -26,6 +26,7 @@ export class RequestDeletedListener extends Listener<RequestDeletedEvent> {
             title: book.title,
             userId: book.user.id,
             version: book.version,
+            currentStatus: book.currentStatus,
         });
 
         msg.ack();

@@ -13,8 +13,8 @@ export class BookUpdatedListener extends Listener<BookUpdatedEvent> {
             throw new Error('Book not found');
         }
 
-        const { id, title, userId } = data;
-        book.set({ id, title, userId });
+        const { id, title, userId, currentStatus } = data;
+        book.set({ id, title, userId, currentStatus });
 
         await book.save();
 

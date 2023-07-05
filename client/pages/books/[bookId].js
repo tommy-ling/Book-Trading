@@ -2,6 +2,7 @@ import Router from 'next/router';
 import { useRequest } from '../../hooks/useRequest';
 
 const BookShowOne = ({ book, currentUser }) => {
+    const disabled = book.currentStatus === 'confirmed';
     const { errors, doRequest } = useRequest({
         url: `/api/books/${book.id}`,
         method: 'delete',
@@ -20,11 +21,12 @@ const BookShowOne = ({ book, currentUser }) => {
                     Router.push('/requests/[bookId]', `/requests/${book.id}`);
                 }}
                 className='btn btn-primary'
+                disabled={disabled}
             >
                 Exchange this book
             </button>
             {book.user.id === currentUser.id ? (
-                <button onClick={onDeleteClick} className='btn btn-outline-danger mx-3'>
+                <button onClick={onDeleteClick} className='btn btn-outline-danger mx-3' disabled={disabled}>
                     Delete this book
                 </button>
             ) : null}

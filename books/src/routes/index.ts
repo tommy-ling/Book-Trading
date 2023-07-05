@@ -4,7 +4,7 @@ import { Book } from '../models/books';
 const router = express.Router();
 
 router.get('/api/books/', async (req: Request, res: Response) => {
-    const books = await Book.find({}).populate('user');
+    const books = await Book.find({ currentStatus: null }).populate('user');
     res.send(books);
 });
 

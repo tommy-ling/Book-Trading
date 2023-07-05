@@ -20,7 +20,9 @@ const AddNewRequest = ({ books, book, myBooks, currentUser }) => {
         doRequest();
     };
 
-    const booksToChooseFrom = myOwnBook ? books.filter((book) => book.user.id !== currentUser.id) : myBooks;
+    const booksToChooseFrom = myOwnBook
+        ? books.filter((book) => book.user.id !== currentUser.id)
+        : myBooks.filter((book) => book.currentStatus !== 'confirmed');
 
     const booksList = booksToChooseFrom.map((book) => {
         return (

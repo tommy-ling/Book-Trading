@@ -23,6 +23,7 @@ export class RequestCreatedListener extends Listener<RequestCreatedEvent> {
             title: book.title,
             userId: book.user.id,
             version: book.version,
+            currentStatus: book.currentStatus,
         });
 
         msg.ack();

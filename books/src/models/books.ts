@@ -12,6 +12,7 @@ interface BookDoc extends mongoose.Document {
     user: UserDoc;
     version: number;
     requestId?: string[];
+    currentStatus?: string;
 }
 
 interface BookModel extends mongoose.Model<BookDoc> {
@@ -30,6 +31,10 @@ const bookSchema = new mongoose.Schema(
         },
         requestId: {
             type: [String],
+        },
+        currentStatus: {
+            type: String,
+            default: null,
         },
     },
     {
