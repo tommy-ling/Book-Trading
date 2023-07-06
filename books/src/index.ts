@@ -7,6 +7,7 @@ import { UserUpdatedListener } from './events/listeners/userUpdatedListener';
 import { RequestCreatedListener } from './events/listeners/requestCreatedListener';
 import { RequestDeletedListener } from './events/listeners/requestDeletedListener';
 import { RequestMatchedListener } from './events/listeners/requestMatchedListener';
+import { RequestMatchCancelledListener } from './events/listeners/requestMatchCancelledListener';
 
 const start = async () => {
     console.log('Starting Up...');
@@ -45,6 +46,7 @@ const start = async () => {
         new RequestCreatedListener(natsWrapper.client).listen();
         new RequestDeletedListener(natsWrapper.client).listen();
         new RequestMatchedListener(natsWrapper.client).listen();
+        new RequestMatchCancelledListener(natsWrapper.client).listen();
 
         await mongoose.connect(process.env.MONGO_URI);
         console.log('Connected to MongoDB');

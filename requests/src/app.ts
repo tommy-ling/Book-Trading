@@ -10,6 +10,7 @@ import { createRequestRouter } from './routes/new';
 import { deleteRequestRouter } from './routes/delete';
 import { matchRequestRouter } from './routes/match';
 import { allRequestRouter } from './routes/all';
+import { matchCancelRouter } from './routes/matchCancel';
 
 const app = express();
 app.set('trust proxy', true);
@@ -29,6 +30,7 @@ app.use(showReceivedRouter);
 app.use(createRequestRouter);
 app.use(deleteRequestRouter);
 app.use(matchRequestRouter);
+app.use(matchCancelRouter);
 app.use(allRequestRouter);
 
 app.all('*', (req, res) => {

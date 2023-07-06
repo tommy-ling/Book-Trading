@@ -106,6 +106,17 @@ const RequestsShowMine = ({ requests, requestsReceived, allRequests, currentUser
         .filter((request) => request.currentStatus === 'confirmed')
         .filter((request) => request.fromUser.id === currentUser.id || request.toUser.id === currentUser.id)
         .map((request) => {
+            const { doRequest } = useRequest({
+                url: '/api/requests/matchcancel',
+                method: 'post',
+                body: { id: request.id },
+                onSuccess: () => Router.reload(),
+            });
+
+            const onCancelClick = () => {
+                doRequest();
+            };
+
             return (
                 <tr key={request.id}>
                     <td>
@@ -121,6 +132,11 @@ const RequestsShowMine = ({ requests, requestsReceived, allRequests, currentUser
                     <td>
                         name: {request.fromUser.name}; userName: {request.fromUser.userName}; loc:{' '}
                         {request.fromUser.city}
+                    </td>
+                    <td>
+                        <button onClick={onCancelClick} className='btn btn-outline-danger py-0'>
+                            Cancel
+                        </button>
                     </td>
                 </tr>
             );
@@ -166,6 +182,7 @@ const RequestsShowMine = ({ requests, requestsReceived, allRequests, currentUser
                             <th>Book Requested</th>
                             <th>Book Given</th>
                             <th>From User</th>
+                            <th>Cancel</th>
                         </tr>
                     </thead>
                     <tbody>{requestsMatched}</tbody>
