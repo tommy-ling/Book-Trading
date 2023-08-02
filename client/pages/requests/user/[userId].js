@@ -1,8 +1,9 @@
-import Router from 'next/router';
+import Router, { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useRequest } from '../../../hooks/useRequest';
 
 const RequestsShowMine = ({ requests, requestsReceived, allRequests, currentUser }) => {
+    const router = useRouter();
     const myRequestList = requests
         .filter(
             (request) =>
@@ -117,6 +118,16 @@ const RequestsShowMine = ({ requests, requestsReceived, allRequests, currentUser
                 doRequest();
             };
 
+            const userToChat =
+                currentUser.id === request.fromUser.id ? request.toUser.id : request.fromUser.id;
+
+            const onStartClick = () => {
+                router.push({
+                    pathname: '../../chat/[userId]',
+                    query: { userId: userToChat },
+                });
+            };
+
             return (
                 <tr key={request.id}>
                     <td>
@@ -136,6 +147,11 @@ const RequestsShowMine = ({ requests, requestsReceived, allRequests, currentUser
                     <td>
                         <button onClick={onCancelClick} className='btn btn-outline-danger py-0'>
                             Cancel
+                        </button>
+                    </td>
+                    <td>
+                        <button onClick={onStartClick} className='btn btn-outline-success py-0'>
+                            Start
                         </button>
                     </td>
                 </tr>
@@ -183,6 +199,7 @@ const RequestsShowMine = ({ requests, requestsReceived, allRequests, currentUser
                             <th>Book Given</th>
                             <th>From User</th>
                             <th>Cancel</th>
+                            <th>Start Chat</th>
                         </tr>
                     </thead>
                     <tbody>{requestsMatched}</tbody>

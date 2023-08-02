@@ -5,6 +5,7 @@ metadata:
     annotations:
         kubernetes.io/ingress.class: nginx
         nginx.ingress.kubernetes.io/use-regex: 'true'
+        nginx.org/websocket-services: 'chat-srv'
 spec:
     rules:
         - host: booktrading.dev
@@ -29,6 +30,20 @@ spec:
                     backend:
                         service:
                             name: requests-srv
+                            port:
+                                number: 3000
+                  - path: /chat/?(.*)
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: chat-srv
+                            port:
+                                number: 3000
+                  - path: /socket.io/.*
+                    pathType: Prefix
+                    backend:
+                        service:
+                            name: chat-srv
                             port:
                                 number: 3000
                   - path: /?(.*)

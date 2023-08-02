@@ -39,3 +39,11 @@ build:
               manual:
                   - src: '**/*.js'
                     dest: .
+        - image: tommyling79/book-trading-chat
+          context: chat
+          docker:
+              dockerfile: Dockerfile
+          sync:
+              manual:
+                  - src: 'src/**/*.ts'
+                    dest: .
