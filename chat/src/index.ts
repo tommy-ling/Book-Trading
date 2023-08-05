@@ -1,7 +1,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { addUser, removeUser, getUser, generateMessage } from '@tlbooktrading/common';
+import { addUser, getUser, generateMessage } from '@tlbooktrading/common';
 
 const app = express();
 const server = createServer(app);
@@ -31,17 +31,9 @@ nsp.on('connection', (socket) => {
     });
 
     socket.on('sendMessage', ({ message, id }, callback) => {
-        const { user } = getUser(id);
+        const user = getUser(id);
         nsp.to(user!.room).emit('message', generateMessage(user!.username, message));
         callback();
-    });
-
-    socket.on('disconnect', () => {
-        const user = removeUser(socketid);
-        console.log('Disconnected!');
-        if (user) {
-            nsp.to(user.room).emit('message', generateMessage('Admin', `${user.username} has left`));
-        }
     });
 });
 

@@ -1,13 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.css';
+import { useMemo } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import buildClient from '../helpers/buildClient';
 import Header from '../components/header';
 
 const AppComponent = ({ Component, pageProps, currentUser }) => {
+    const socketid = useMemo(() => uuidv4(), []);
+
     return (
         <div>
             <Header currentUser={currentUser} />
             <div className='container'>
-                <Component currentUser={currentUser} {...pageProps} />
+                <Component currentUser={currentUser} id={socketid} {...pageProps} />
             </div>
         </div>
     );

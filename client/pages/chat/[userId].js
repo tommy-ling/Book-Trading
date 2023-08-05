@@ -1,9 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import moment from 'moment';
-import { v4 as uuidv4 } from 'uuid';
 
-const ChatWindow = ({ data, currentUser }) => {
+const ChatWindow = ({ data, currentUser, id }) => {
     const socket = io('/chat', {
         reconnection: true,
         transports: ['websocket'],
@@ -13,7 +12,6 @@ const ChatWindow = ({ data, currentUser }) => {
     const [error, setError] = useState('');
     const [msg, setMsg] = useState([]);
     const [composeMsg, setComposeMsg] = useState('');
-    const id = useMemo(() => uuidv4(), []);
 
     useEffect(() => {
         socket.emit('join', { username: currentUser.userName, room, id }, (err) => {
