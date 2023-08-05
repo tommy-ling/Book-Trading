@@ -11,9 +11,10 @@ const nsp = io.of('/chat');
 
 nsp.on('connection', (socket) => {
     console.log('New web socket connection');
+    const id = socket.id;
 
     socket.on('join', ({ username, room }, callback) => {
-        const { error, user } = addUser({ id: socket.id, username, room });
+        const { error, user } = addUser({ id, username, room });
         if (error) {
             return callback(error);
         }
@@ -29,8 +30,7 @@ nsp.on('connection', (socket) => {
     });
 
     socket.on('sendMessage', (message, callback) => {
-        const user = getUser(socket.id);
-
+        const { user } = getUser(id);
         nsp.to(user!.room).emit('message', generateMessage(user!.username, message));
         callback();
     });

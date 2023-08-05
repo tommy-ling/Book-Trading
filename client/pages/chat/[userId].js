@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
+import moment from 'moment';
 
 const ChatWindow = ({ data, currentUser }) => {
     const socket = io('/chat', {
@@ -9,34 +10,53 @@ const ChatWindow = ({ data, currentUser }) => {
     const username = data[0].user.userName;
     const roomId = [username, currentUser.userName].sort().toString();
     const [error, setError] = useState('');
-    const [msg, setMsg] = useState('');
+    const [msg, setMsg] = useState([]);
     const [composeMsg, setComposeMsg] = useState('');
 
-    socket.emit('join', { username: currentUser.userName, room: roomId }, (err) => {
-        setError(err);
-    });
+    useEffect(() => {
+        socket.emit('join', { username: currentUser.userName, room: roomId }, (err) => {
+            setError(err);
+        });
+    }, []);
 
     socket.on('message', (message) => {
-        console.log(message.text);
-        setMsg(message.text);
+        console.log(message);
+        setMsg((prev) => [...prev, message]);
     });
 
-    console.log(data[0].user.userName, currentUser);
+    const onSubmit = (e) => {
+        e.preventDefault();
+
+        socket.emit('sendMessage', composeMsg, (error) => {
+            setComposeMsg('');
+            if (error) {
+                return console.log(error);
+            }
+            console.log('Message delivered');
+        });
+    };
+
     return (
         <div>
             <div className='chat'>
                 <div id='messages' className='chat__messages'>
                     <div className='message'>
-                        <p>
-                            <span className='message__name'>username</span>
-                            <span className='message__meta'>createdAt</span>
-                        </p>
-                        <p>{msg}</p>
+                        {msg.map((message) => (
+                            <div key={message.createdAt}>
+                                <p>
+                                    <span className='message__name'>{message.username}</span>
+                                    <span className='message__meta'>
+                                        {moment(message.createdAt).format('h:mm a')}
+                                    </span>
+                                </p>
+                                <p>{message.text}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
 
                 <div className='compose'>
-                    <form id='message-form'>
+                    <form id='message-form' onSubmit={onSubmit}>
                         <input
                             name='message'
                             placeholder='message'
