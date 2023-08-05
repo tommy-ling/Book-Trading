@@ -8,13 +8,14 @@ const server = createServer(app);
 const io = new Server(server);
 
 const nsp = io.of('/chat');
+let socketid: string;
 
 nsp.on('connection', (socket) => {
     console.log('New web socket connection');
-    const id = socket.id;
 
-    socket.on('join', ({ username, room }, callback) => {
-        const { error, user } = addUser({ id, username, room });
+    socket.on('join', ({ username, room, id }, callback) => {
+        socketid = id;
+        const { error, user } = addUser({ id: socketid, username, room });
         if (error) {
             return callback(error);
         }
@@ -29,15 +30,15 @@ nsp.on('connection', (socket) => {
         callback();
     });
 
-    socket.on('sendMessage', (message, callback) => {
+    socket.on('sendMessage', ({ message, id }, callback) => {
         const { user } = getUser(id);
         nsp.to(user!.room).emit('message', generateMessage(user!.username, message));
         callback();
     });
 
     socket.on('disconnect', () => {
-        const user = removeUser(socket.id);
-
+        const user = removeUser(socketid);
+        console.log('Disconnected!');
         if (user) {
             nsp.to(user.room).emit('message', generateMessage('Admin', `${user.username} has left`));
         }

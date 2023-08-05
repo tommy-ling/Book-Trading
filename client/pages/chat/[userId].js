@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { io } from 'socket.io-client';
 import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 
 const ChatWindow = ({ data, currentUser }) => {
     const socket = io('/chat', {
@@ -8,13 +9,14 @@ const ChatWindow = ({ data, currentUser }) => {
         transports: ['websocket'],
     });
     const username = data[0].user.userName;
-    const roomId = [username, currentUser.userName].sort().toString();
+    const room = [username, currentUser.userName].sort().toString();
     const [error, setError] = useState('');
     const [msg, setMsg] = useState([]);
     const [composeMsg, setComposeMsg] = useState('');
+    const id = useMemo(() => uuidv4(), []);
 
     useEffect(() => {
-        socket.emit('join', { username: currentUser.userName, room: roomId }, (err) => {
+        socket.emit('join', { username: currentUser.userName, room, id }, (err) => {
             setError(err);
         });
     }, []);
@@ -27,7 +29,7 @@ const ChatWindow = ({ data, currentUser }) => {
     const onSubmit = (e) => {
         e.preventDefault();
 
-        socket.emit('sendMessage', composeMsg, (error) => {
+        socket.emit('sendMessage', { message: composeMsg, id }, (error) => {
             setComposeMsg('');
             if (error) {
                 return console.log(error);
