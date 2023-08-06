@@ -13,7 +13,7 @@ const MyProfile = ({ currentUser }) => {
     const pwBtn = !pwBtnClicked ? (
         'Edit'
     ) : (
-        <input onChange={(e) => setPassword(e.target.value)} value={password} />
+        <input type='password' onChange={(e) => setPassword(e.target.value)} value={password} />
     );
     const cityBtn = !cityBtnClicked ? (
         'Edit'

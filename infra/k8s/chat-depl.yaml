@@ -15,6 +15,9 @@ spec:
             containers:
                 - name: chat
                   image: tommyling79/book-trading-chat
+                  env:
+                      - name: MONGO_URI
+                        value: mongodb://chat-mongo-srv:27017/chat
 ---
 apiVersion: v1
 kind: Service

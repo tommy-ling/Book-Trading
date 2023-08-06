@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import moment from 'moment';
+import { useRequest } from '../../hooks/useRequest';
 
 const ChatWindow = ({ data, currentUser, id }) => {
     const socket = io('/chat', {
@@ -24,10 +25,19 @@ const ChatWindow = ({ data, currentUser, id }) => {
         setMsg((prev) => [...prev, message]);
     });
 
-    const onSubmit = (e) => {
+    const { doRequest } = useRequest({
+        url: '/api/chats',
+        method: 'post',
+        body: { username: currentUser.userName, text: composeMsg, room },
+        onSuccess: () => {},
+    });
+
+    const onSubmit = async (e) => {
         e.preventDefault();
 
-        socket.emit('sendMessage', { message: composeMsg, id }, (error) => {
+        await doRequest();
+
+        socket.emit('sendMessage', { message: composeMsg, id, room }, (error) => {
             setComposeMsg('');
             if (error) {
                 return console.log(error);
@@ -77,6 +87,7 @@ const ChatWindow = ({ data, currentUser, id }) => {
 ChatWindow.getInitialProps = async (context, client) => {
     const { userId } = context.query;
     const { data } = await client.get(`/api/books/user/${userId}`);
+    // const { chats } = await client.get(`/api/chats`);
 
     return { data };
 };

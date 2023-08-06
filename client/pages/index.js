@@ -17,7 +17,7 @@ const LandingPage = ({ currentUser, books }) => {
             <tr key={book.id}>
                 <td>
                     <Link href='/books/[bookid]' as={`/books/${book.id}`}>
-                        <a>{book.title}</a>
+                        {book.title}
                     </Link>
                 </td>
                 <td>
@@ -27,7 +27,7 @@ const LandingPage = ({ currentUser, books }) => {
                 <td>{book.requestId.length}</td>
                 <td>
                     <Link href='/requests/[bookId]' as={`/requests/${book.id}`}>
-                        <a> Make Request</a>
+                        Make Request
                     </Link>
                 </td>
             </tr>
