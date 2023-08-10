@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.css';
+import './chat/chat.css';
 import { useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import buildClient from '../helpers/buildClient';
@@ -8,7 +9,7 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
     const socketid = useMemo(() => uuidv4(), []);
 
     return (
-        <div>
+        <div id='page'>
             <Header currentUser={currentUser} />
             <div className='container'>
                 <Component currentUser={currentUser} id={socketid} {...pageProps} />

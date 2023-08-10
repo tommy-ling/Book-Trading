@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 import moment from 'moment';
 import { useRequest } from '../../hooks/useRequest';
@@ -14,28 +14,36 @@ const ChatWindow = ({ data, currentUser, id }) => {
     const [msg, setMsg] = useState([]);
     const [composeMsg, setComposeMsg] = useState('');
 
+    const msgRef = useRef();
+    const chatRef = useRef();
+
     useEffect(() => {
         socket.emit('join', { username: currentUser.userName, room, id }, (err) => {
             setError(err);
         });
     }, []);
 
+    useEffect(() => {
+        if (msgRef.current) {
+            msgRef.current.scrollIntoView(false);
+        }
+    }, [msg]);
+
     socket.on('message', (message) => {
         console.log(message);
         setMsg((prev) => [...prev, message]);
     });
 
-    const { doRequest } = useRequest({
-        url: '/api/chats',
-        method: 'post',
-        body: { username: currentUser.userName, text: composeMsg, room },
-        onSuccess: () => {},
-    });
+    // const { doRequest } = useRequest({
+    //     url: '/api/chats',
+    //     method: 'post',
+    //     body: { username: currentUser.userName, text: composeMsg, room },
+    //     onSuccess: () => {},
+    // });
 
     const onSubmit = async (e) => {
         e.preventDefault();
-
-        await doRequest();
+        // await doRequest();
 
         socket.emit('sendMessage', { message: composeMsg, id, room }, (error) => {
             setComposeMsg('');
@@ -47,18 +55,16 @@ const ChatWindow = ({ data, currentUser, id }) => {
     };
 
     return (
-        <div>
-            <div className='chat'>
-                <div id='messages' className='chat__messages'>
+        <>
+            <div className='chat__main'>
+                <div className='chat__messages' ref={chatRef}>
                     <div className='message'>
                         {msg.map((message) => (
-                            <div key={message.createdAt}>
-                                <p>
-                                    <span className='message__name'>{message.username}</span>
-                                    <span className='message__meta'>
-                                        {moment(message.createdAt).format('h:mm a')}
-                                    </span>
-                                </p>
+                            <div key={message.createdAt} ref={msgRef}>
+                                <span className='message__name'>{message.username}</span>
+                                <span className='message__meta'>
+                                    {moment(message.createdAt).format('h:mm a')}
+                                </span>
                                 <p>{message.text}</p>
                             </div>
                         ))}
@@ -66,7 +72,7 @@ const ChatWindow = ({ data, currentUser, id }) => {
                 </div>
 
                 <div className='compose'>
-                    <form id='message-form' onSubmit={onSubmit}>
+                    <form onSubmit={onSubmit}>
                         <input
                             name='message'
                             placeholder='message'
@@ -80,7 +86,7 @@ const ChatWindow = ({ data, currentUser, id }) => {
                 </div>
             </div>
             {error}
-        </div>
+        </>
     );
 };
 
